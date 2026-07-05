@@ -1,5 +1,56 @@
 # Note for Member C
 
+## Oversight panel + UI updates from A — pull these before Checkpoint 2
+
+A added three things to your UI while you were running low on tokens.
+Pull `origin/member-a -- ui/` to get them:
+
+```bash
+git fetch origin
+git checkout origin/member-a -- ui/src/App.tsx ui/src/components/Graph.tsx ui/src/components/Oversight.tsx ui/index.html
+```
+
+### What changed
+
+**`ui/src/components/Oversight.tsx` (new file)**
+Business-facing case dashboard. Shows each `DECISION` envelope as a case card
+with APPROVE/DENY outcome, risk score and policy from ancestor envelopes,
+a PII-sealed note, hop count, and a "View audit trail →" button that opens
+the Inspector. Empty-state explains the product to first-time viewers.
+Works in both mock and real feed mode — reads from the existing store.
+
+**`ui/src/App.tsx`**
+Right column is now tabbed. **Case Oversight** is the default tab;
+**Audit Ledger** is the second tab. Nothing else changed in the layout.
+Header renamed from "AgentSeal" to "SigiLog".
+
+**`ui/src/components/Graph.tsx`**
+Each agent node now shows a second line with the department role
+(e.g. "Risk assessment") from `useRegistry()` → `GET /registry`. In mock
+mode it falls back to `AGENT_FALLBACK[id].role` from `config.ts`.
+
+**`ui/index.html`**
+Page title updated to "SigiLog — Trust & Provenance Console".
+
+### No store changes
+`store.ts`, `types.ts`, `useStore.ts`, `useRegistry.ts`, `config.ts` are
+untouched. The Oversight component imports `ancestryOf` and `getState`
+which are already exported from `store.ts`.
+
+### Parsing note
+The `CaseCard` in Oversight parses `payload_preview` via simple `key=value`
+splitting. B's `payloadPreview` function generates previews like:
+```
+DECISION:         decision=DENY reason=HIGH risk
+RISK_ASSESSMENT:  risk=HIGH score=0.87
+COMPLIANCE_CHECK: policy=PASS_WITH_REVIEW
+```
+The parser skips any chunk without `=` (so "risk" after "HIGH" is dropped —
+only `decision` and `reason` token is read). This is intentional and matches
+the actual preview format.
+
+---
+
 ## Checkpoint 1 — PASSED ✅
 
 The real A+B pipeline is working. You can swap your mockfeed for the real SSE stream now.
