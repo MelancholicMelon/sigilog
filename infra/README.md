@@ -47,6 +47,10 @@ npm run fixtures:ledger   # regenerate sample_ledger.valid / .broken_chain
 
 ## Notes for integration (Checkpoint 1)
 
+- **Scenario runner** (wired with A): `POST /scenario/start` runs A's runner from the repo
+  root. Default command is `python protocol/agents/runner.py start`; override with the
+  `AGENT_RUNNER_CMD` env var. cwd is always the repo root regardless of where the relay
+  was launched.
 - **Envelope store** (`runtime/envelopes.jsonl`): B persists every `/send` envelope so the
   auditor can re-verify signatures — the ledger record only carries `envelope_hash`. This
   fills a contract gap; confirm with the team.

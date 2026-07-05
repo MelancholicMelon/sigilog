@@ -8,7 +8,7 @@ const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 
-const { PORT, UI_ORIGIN, LEDGER_PATH, ENVELOPES_PATH, REGISTRY_PATH } = require('../lib/paths');
+const { PORT, UI_ORIGIN, REPO_ROOT, LEDGER_PATH, ENVELOPES_PATH, REGISTRY_PATH } = require('../lib/paths');
 const { envelopeHash } = require('../lib/canonical');
 const { EventBus } = require('../lib/bus');
 const { Ledger } = require('../ledger/ledger');
@@ -187,15 +187,15 @@ app.post('/replay', (req, res) => {
   res.json({ ok: true });
 });
 
-// Scenario kickoff forwards to A's runner. Wiring agreed at Checkpoint 1
-// (transport.md §5). Until then, set AGENT_RUNNER_CMD to a shell command.
+// Scenario kickoff forwards to A's runner (transport.md §5). Wiring agreed with
+// A at Checkpoint 1: run the Python runner from the repo root. AGENT_RUNNER_CMD
+// overrides the command; cwd is always REPO_ROOT so relative paths resolve
+// regardless of where the relay was launched from (e.g. `npm start` in infra/).
 app.post('/scenario/start', (req, res) => {
-  const cmd = process.env.AGENT_RUNNER_CMD;
-  if (cmd) {
-    require('child_process').exec(cmd, (err) => err && console.error('[scenario] runner failed:', err.message));
-  } else {
-    console.warn("[scenario] no AGENT_RUNNER_CMD set — A's runner not wired yet (Checkpoint 1).");
-  }
+  const cmd = process.env.AGENT_RUNNER_CMD || 'python protocol/agents/runner.py start';
+  require('child_process').exec(cmd, { cwd: REPO_ROOT }, (err) => {
+    if (err) console.error('[scenario] runner failed:', err.message);
+  });
   res.json({ ok: true });
 });
 
