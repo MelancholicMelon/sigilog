@@ -1,0 +1,10 @@
+runtime/keys/
+runtime/registry.json
+runtime/ledger.jsonl
+__pycache__/
+*.pyc
+*.pyo
+.env
+node_modules/
+*.egg-info/
+dist/
