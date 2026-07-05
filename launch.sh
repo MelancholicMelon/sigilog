@@ -6,7 +6,7 @@ REPO="$(cd "$(dirname "$0")" && pwd)"
 SESSION="sigilog"
 
 # Check if tmux is installed
-if ! command -v tmux >/dev/null 2>&1; then
+if ! tmux -V >/dev/null 2>&1; then
   echo "Error: tmux is not installed."
   echo
   echo "Please install tmux and run this script again."
