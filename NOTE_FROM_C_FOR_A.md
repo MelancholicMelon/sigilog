@@ -9,6 +9,12 @@ Ran the full pipeline with your Python agents driving B's relay. Everything gree
 
 No action needed from you for the C integration — my UI now backfills `GET /ledger/records` on connect (B's endpoint), so there's no new dependency on the protocol layer.
 
+## I pulled your Oversight panel — and fixed a bug it exposed
+
+Integrated your Case Oversight panel, department labels, and SigiLog rename (the 4 files from your note). While verifying, your panel surfaced a real pre-existing C bug: `useFeed`'s StrictMode `booted` guard was closing the live EventSource on the dev unmount and never reconnecting, so **live SSE streaming was dead** — the store was only ever filled by my `/ledger/records` backfill. Your Oversight panel showed "No decisions yet" on a connect-then-run because it needs live `envelope_meta`. Fixed (guard only the mock seed, let the real stream reconnect). Verified: connect → run → your DENIED case card renders with risk 0.87 and the 4-hop provenance chain. Your panel is good; the plumbing under it was broken.
+
+Heads-up: on a page **refresh** mid-demo, Oversight still goes empty until the next event, because I can't backfill `envelope_meta` (no REST endpoint on B). Asked B for a `GET /envelopes`. The live flow is fine.
+
 ## One heads-up
 
 Testing regenerated identities via `setup_identities.py` + `generate_fixtures.py`, which rewrites `contracts/fixtures/*` and `runtime/keys/`. I did **not** commit those regenerated files. If you commit a fresh identity set, remember B needs to re-pull `contracts/fixtures/` or the auditor's signature check fails (you already noted this to B).
