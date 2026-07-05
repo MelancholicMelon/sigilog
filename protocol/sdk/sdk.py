@@ -54,8 +54,14 @@ def send(sender_identity: dict, recipient_ids: list, message_type: str,
             private_key_b64=sender_identity["private_key"],
         )
 
-    r = requests.post(f"{RELAY_BASE}/send", json=envelope, timeout=10)
+    # Strip envelope_hash before sending — B hashes the received body to produce
+    # the authoritative hash; including our locally-computed field would make B's
+    # hash differ from ours, breaking parent-hash lookups.
+    wire = {k: v for k, v in envelope.items() if k != "envelope_hash"}
+    r = requests.post(f"{RELAY_BASE}/send", json=wire, timeout=10)
     r.raise_for_status()
+    # Use B's authoritative hash for parent tracking (same value since wire is 5-field)
+    envelope["envelope_hash"] = r.json().get("envelope_hash", envelope.get("envelope_hash"))
     return envelope
 
 
@@ -128,6 +134,7 @@ def _report_verified(envelope: dict, checked_by: str) -> None:
     try:
         requests.post(f"{RELAY_BASE}/verified", json={
             "envelope_id": envelope["header"]["envelope_id"],
+            "envelope_hash": envelope.get("envelope_hash", ""),
             "checked_by": checked_by,
         }, timeout=5)
     except Exception:
@@ -138,6 +145,7 @@ def _report_verification_failed(envelope: dict, checked_by: str, error_code: str
     try:
         requests.post(f"{RELAY_BASE}/verification_failed", json={
             "envelope_id": envelope["header"]["envelope_id"],
+            "envelope_hash": envelope.get("envelope_hash", ""),
             "error_code": error_code,
             "checked_by": checked_by,
         }, timeout=5)
@@ -153,7 +161,8 @@ def _report_opened(envelope: dict, agent_id: str) -> None:
     try:
         requests.post(f"{RELAY_BASE}/opened", json={
             "envelope_id": envelope["header"]["envelope_id"],
-            "agent_id": agent_id,
+            "envelope_hash": envelope.get("envelope_hash", ""),
+            "actor_id": agent_id,
         }, timeout=5)
     except Exception:
         pass
