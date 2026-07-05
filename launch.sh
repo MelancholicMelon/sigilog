@@ -5,6 +5,25 @@
 REPO="$(cd "$(dirname "$0")" && pwd)"
 SESSION="sigilog"
 
+# Check if tmux is installed
+if ! tmux -V >/dev/null 2>&1; then
+  echo "Error: tmux is not installed."
+  echo
+  echo "Please install tmux and run this script again."
+  echo
+  echo "Examples:"
+  echo "  macOS (Homebrew): brew install tmux"
+  echo "  Ubuntu/Debian:    sudo apt install tmux"
+  echo "  Fedora:           sudo dnf install tmux"
+  echo "  Arch Linux:       sudo pacman -S tmux"
+  exit 1
+fi
+
+# First run: generate agent identities (registry + keys) if missing
+if [ ! -f "$REPO/runtime/registry.json" ]; then
+  (cd "$REPO" && python3 protocol/setup_identities.py)
+fi
+
 # Kill stale session and any leftover processes on the ports
 tmux kill-session -t "$SESSION" 2>/dev/null
 pkill -f "relay/server.js" 2>/dev/null
@@ -16,7 +35,7 @@ sleep 1
 tmux new-session -d -s "$SESSION" -x 220 -y 60
 
 # Pane 0 (top): relay server
-tmux send-keys -t "$SESSION:0.0" "cd '$REPO/ui/infra' && node relay/server.js" Enter
+tmux send-keys -t "$SESSION:0.0" "cd '$REPO/infra' && node relay/server.js" Enter
 
 # Pane 1 (middle): UI dev server
 tmux split-window -v -t "$SESSION:0.0"
