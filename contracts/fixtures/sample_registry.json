@@ -1,0 +1,32 @@
+{
+  "agents": [
+    {
+      "agent_id": "intake-agent",
+      "public_key": "T_kG_rM8AfupO3sdSyqPx_Ys6r4aoRqz1uUL--cNFvM",
+      "seal_public_key": "xEjFJDjwuxD8157YfN8xm8dn471BDcvwx4Vm40KAJgI",
+      "role": "Loan intake",
+      "org": "Demo Bank"
+    },
+    {
+      "agent_id": "risk-agent",
+      "public_key": "71YZzmH79cRSDhxLty008PANo6e7bsHH69QIOOx2mjc",
+      "seal_public_key": "ygFJj8kX0AzIqiEvuNP0zVEm4UxSqCw0a3iZE7OHHhU",
+      "role": "Risk assessment",
+      "org": "Demo Bank"
+    },
+    {
+      "agent_id": "compliance-agent",
+      "public_key": "48zYc0PB9SzahDfOjHNDK0zx_C_p0RneCUHgaVA_Bxs",
+      "seal_public_key": "fzrLsz3LuPKiUuNiu01tlUBeZTe512YYuEdZX2w3Z04",
+      "role": "Compliance check",
+      "org": "Demo Bank"
+    },
+    {
+      "agent_id": "decision-agent",
+      "public_key": "XU4V2mbqlMp3gu52iZ14L3RE_ZU2g-T8m2IRSa_nkNM",
+      "seal_public_key": "5SCIo1YLKVMaXMBrbRuYNyWW4aRMjbkAkQrqOv9JNz0",
+      "role": "Loan decision",
+      "org": "Demo Bank"
+    }
+  ]
+}

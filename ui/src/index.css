@@ -1,0 +1,13 @@
+@import 'tailwindcss';
+
+/* Neutral base. Real design lands later via design.md handoff. */
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: #0b0d12;
+  color: #d6d9e0;
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}

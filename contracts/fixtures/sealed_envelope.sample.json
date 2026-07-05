@@ -1,0 +1,29 @@
+{
+  "content_hash": "4a9ec1fc06139bc3722778af86fb595b2cf3438d442cdf4c010840fdb1f026e9",
+  "header": {
+    "envelope_id": "052e8cac-a9ab-4cee-8ad2-c7080758fde1",
+    "message_type": "LOAN_APPLICATION",
+    "protocol_version": "0.1",
+    "recipient_ids": [
+      "risk-agent"
+    ],
+    "sender_id": "intake-agent",
+    "timestamp": "2026-07-05T05:06:19.023Z"
+  },
+  "payload": {
+    "ciphertext": "CBHJ7eUI6LjSpQSFampApgwxIRjSO-7A7qEg_I8H3hrCKlO30gtF4UTVpj2zYF7fyxEN5oaXF7w4aN6QIiIWWw3E_I2gOi1RKv07sboFue4fsdhJ2XkAg0z0PO-IuGKNn4AinloykC-vks396u5jr_iUKjk",
+    "mode": "SEALED",
+    "seal_info": {
+      "recipient_id": "risk-agent",
+      "scheme": "X25519-HKDF-SHA256-AES-256-GCM"
+    }
+  },
+  "provenance": {
+    "hop_history": [
+      "intake-agent"
+    ],
+    "parent_hashes": []
+  },
+  "signature": "qDsXb5SOXaASXe9cTrry-KcsS32lT8eS7OdP8OZYfk8YYOaQYe3oU-Ei74W-biIDOeWFpoaqKtROT5VsBboQDA",
+  "envelope_hash": "add765cc07e4a46edf74390f479f581c184e219a4c4001ade64a3fb7a4b5f68c"
+}

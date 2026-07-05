@@ -87,39 +87,73 @@ The live demo shows:
 
 ```
 sigilog/
-├── PLAN.md          # full design doc: architecture, security model, roadmap
-├── contracts/        # frozen protocol contracts — the source of truth
-│   ├── envelope.schema.md
-│   ├── ledger.schema.md
-│   ├── events.schema.md
-│   ├── sdk.api.md
-│   ├── transport.md
-│   └── fixtures/      # golden test envelopes, sample ledgers, sample streams
-├── protocol/          # identity, envelope signing/sealing, SDK, demo agents
-├── infra/             # relay, hash-chained ledger, auditor, replay engine
-├── ui/                # agent graph, ledger panel, provenance inspector, replay UI
-├── integration/       # cross-component tests against contracts/fixtures
-└── submission/        # hackathon deliverables (pitch, video script, writeups)
+├── launch.sh          # one-command demo launcher (relay + UI + scenario shell)
+├── contracts/         # frozen protocol contracts — the source of truth
+│   ├── envelope.schema.md   # envelope structure, canonicalization, hashing, signing
+│   ├── ledger.schema.md     # ledger records, hash-chain rule, genesis
+│   ├── events.schema.md     # relay → UI live event stream
+│   ├── sdk.api.md           # SDK signatures + canonical error codes
+│   ├── transport.md         # ports, endpoints, runtime paths, agent IDs
+│   └── fixtures/            # golden signed envelopes (valid / forged / tampered)
+├── protocol/          # Python: identity, envelope signing/sealing, SDK, demo agents
+├── infra/             # Node: relay, hash-chained ledger, independent auditor, replay
+├── ui/                # React: live agent graph, ledger panel, inspector, oversight, replay
+└── runtime/           # generated at run time: keys, registry, ledger (gitignored)
 ```
 
+The protocol SDK is **Python** and the relay/auditor are **Node.js** — deliberately.
+The auditor re-implements canonicalization and Ed25519 verification from the written
+contracts alone, so every green checkmark is a genuine cross-language, third-party
+verification, not the SDK grading its own homework.
 
 ---
 
 ## Getting started
 
+**Prerequisites:** Node.js ≥ 18, Python ≥ 3.11 (non-Anaconda), `tmux`.
+
 ```bash
 git clone https://github.com/MelancholicMelon/sigilog.git
 cd sigilog
-# see contracts/transport.md for ports, endpoints, and runtime paths
+
+# one-time setup
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r protocol/requirements.txt
+(cd infra && npm install)
+(cd ui && npm install)
+
+# launch everything (relay :8080 + UI :3000 + scenario shell, in tmux)
+./launch.sh
 ```
 
-Each of `protocol/`, `infra/`, and `ui/` runs independently against the schemas in `contracts/` — see `contracts/README.md` for the exact bring-up sequence.
+Then open **http://localhost:3000/?feed=real** and, from the scenario pane (or the UI's
+run button), start the pipeline:
+
+```bash
+python protocol/agents/runner.py start
+```
+
+**Tamper demo** — flip the malicious-relay toggle in the UI (or
+`curl -X POST localhost:8080/relay/malicious -H 'content-type: application/json' -d '{"enabled":true}'`)
+and run the scenario again: the relay corrupts the risk assessment in flight, the
+compliance agent rejects it with `ERR_SIG_INVALID`, and the pipeline halts before a
+decision is ever made.
+
+**Independent audit** — at any point:
+
+```bash
+cd infra && npm run audit   # exit 0 ⇔ chain intact + every signature re-verifies
+```
 
 ---
 
 ## Status
 
-Early-stage hackathon build. Protocol contracts are frozen; components are under active development. Not production-hardened — see `PLAN.md` §10 for known limitations (centralized registry, delivery isn't guaranteed, a compromised agent can still sign nonsense) and the roadmap for where this goes next.
+Hackathon build. Protocol contracts under `contracts/` are frozen and both
+implementations conform to them (the Node auditor verifies the Python SDK's signed
+golden fixtures byte-for-byte). Not production-hardened: the registry is centralized,
+delivery isn't guaranteed, and a compromised agent can still sign nonsense — `sigilog`
+proves *who said what and how it traveled*, not that it was wise.
 
 ## License
 
