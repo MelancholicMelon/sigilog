@@ -1,0 +1,29 @@
+{
+  "content_hash": "4a9ec1fc06139bc3722778af86fb595b2cf3438d442cdf4c010840fdb1f026e9",
+  "header": {
+    "envelope_id": "1c2aaac7-7ceb-4f0e-a428-d83bc7e85a09",
+    "message_type": "LOAN_APPLICATION",
+    "protocol_version": "0.1",
+    "recipient_ids": [
+      "risk-agent"
+    ],
+    "sender_id": "intake-agent",
+    "timestamp": "2026-07-05T03:39:14.540Z"
+  },
+  "payload": {
+    "content": {
+      "amount": 3000000,
+      "income": 5200000,
+      "name": "Taro Yamada"
+    },
+    "mode": "PLAINTEXT"
+  },
+  "provenance": {
+    "hop_history": [
+      "intake-agent"
+    ],
+    "parent_hashes": []
+  },
+  "signature": "ZVmS1V96RY743QMLdyLK15qB9Jo7n9WwzOaulRfb3DolcS_KB32JRuffqoHOsrADnRV6UwhN7Tur1_gXLw4CAw",
+  "envelope_hash": "f71184f897b4b1a554e3b35bc601bb1ecd1ef8cf6ac75e61f6ff7dff784cc923"
+}
