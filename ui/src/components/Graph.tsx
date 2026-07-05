@@ -162,8 +162,11 @@ export function Graph({
               stroke={selectedHere ? '#fbbf24' : nodeStroke(st)}
               strokeWidth={selectedHere ? 3 : 2}
             />
-            <text x={p.x} y={p.y + 4} textAnchor="middle" fontSize={12} fill="#e4e4e7" fontWeight={600}>
+            <text x={p.x} y={p.y - 3} textAnchor="middle" fontSize={12} fill="#e4e4e7" fontWeight={600}>
               {reg[id]?.name ?? id}
+            </text>
+            <text x={p.x} y={p.y + 13} textAnchor="middle" fontSize={9} fill="#71717a">
+              {reg[id]?.role ?? ''}
             </text>
             {st === 'verified' && (
               <text x={p.x + R - 6} y={p.y - R + 12} fontSize={16}>✅</text>
