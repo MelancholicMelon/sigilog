@@ -5,6 +5,20 @@
 REPO="$(cd "$(dirname "$0")" && pwd)"
 SESSION="sigilog"
 
+# Check if tmux is installed
+if ! command -v tmux >/dev/null 2>&1; then
+  echo "Error: tmux is not installed."
+  echo
+  echo "Please install tmux and run this script again."
+  echo
+  echo "Examples:"
+  echo "  macOS (Homebrew): brew install tmux"
+  echo "  Ubuntu/Debian:    sudo apt install tmux"
+  echo "  Fedora:           sudo dnf install tmux"
+  echo "  Arch Linux:       sudo pacman -S tmux"
+  exit 1
+fi
+
 # First run: generate agent identities (registry + keys) if missing
 if [ ! -f "$REPO/runtime/registry.json" ]; then
   (cd "$REPO" && python3 protocol/setup_identities.py)
