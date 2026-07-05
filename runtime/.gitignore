@@ -1,0 +1,7 @@
+# Runtime artifacts are regenerated every run — never commit them
+# (contracts/transport.md §3). Keep the folders, ignore the contents.
+*
+!.gitignore
+!keys
+keys/*
+!keys/.keep
