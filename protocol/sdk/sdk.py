@@ -69,7 +69,13 @@ def receive(identity: dict) -> list:
     """Poll relay /inbox/<agent_id>; returns list of unverified envelopes."""
     r = requests.get(f"{RELAY_BASE}/inbox/{identity['agent_id']}", timeout=10)
     r.raise_for_status()
-    return r.json()
+    envelopes = r.json()
+    # B strips envelope_hash from the stored body (we stripped it on send).
+    # Recompute and attach so agents can reference it as a parent hash.
+    for env in envelopes:
+        if "envelope_hash" not in env:
+            env["envelope_hash"] = compute_envelope_hash(env)
+    return envelopes
 
 
 def verify_envelope(envelope: dict, registry: dict = None) -> dict:
@@ -90,7 +96,12 @@ def open_envelope(envelope: dict, identity: dict) -> dict:
         _report_failure(envelope, identity["agent_id"], "ERR_NOT_RECIPIENT")
         raise PermissionError("ERR_NOT_RECIPIENT")
 
-    plaintext_bytes = unseal_payload(payload["ciphertext"], identity["seal_private_key"])
+    try:
+        plaintext_bytes = unseal_payload(payload["ciphertext"], identity["seal_private_key"])
+    except Exception:
+        # Ciphertext was tampered — AES-GCM auth tag failed
+        _report_failure(envelope, identity["agent_id"], "ERR_HASH_MISMATCH")
+        raise ValueError("ERR_HASH_MISMATCH")
 
     result = verify_sealed_content_hash(envelope, plaintext_bytes)
     if not result["ok"]:
@@ -112,7 +123,6 @@ def verify_and_open(envelope: dict, identity: dict, registry: dict = None) -> di
 
     result = verify(envelope, registry)
     if not result["ok"]:
-        _report_failure(envelope, identity["agent_id"], result["error_code"])
         _report_verification_failed(envelope, identity["agent_id"], result["error_code"])
         return result
 

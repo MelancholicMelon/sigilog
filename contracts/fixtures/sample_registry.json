@@ -2,29 +2,29 @@
   "agents": [
     {
       "agent_id": "intake-agent",
-      "public_key": "4_CyCi2jp0DnLL931mwaCyHFsXU-RFn3ZxxjDTFH6RA",
-      "seal_public_key": "_qE8Xt_wdNZjUsnrrlTtQToPRgs2JeIbDqnuWek4Lyw",
+      "public_key": "7PKU9erCrE_z9EXFV50E0qOIILiACDzXiuABAOaTNqk",
+      "seal_public_key": "86_pjre8Lko5eoX3pU1YQmN1t1B8ElI4sXU_gfPpECM",
       "role": "Loan intake",
       "org": "Demo Bank"
     },
     {
       "agent_id": "risk-agent",
-      "public_key": "RjDCJnzA8f2J4ClBgryqbDH-s5DwXdJFC36xgPszflo",
-      "seal_public_key": "w9JqdY0hfsg3BnGvUr7XUcbyKabnK35-VtTbh4dHKkk",
+      "public_key": "A12dPd2xlgCplh5tIdz_NKfjVxKne0wiO2du0O_o-Lg",
+      "seal_public_key": "qsnZPUW6kHauD031UXWPI9GJDW5xb_1c6uYfxb2iCkc",
       "role": "Risk assessment",
       "org": "Demo Bank"
     },
     {
       "agent_id": "compliance-agent",
-      "public_key": "Dmhi9s_fGxxytb47t-cNhFZl66_T6Q0hHd6-6AmDjbI",
-      "seal_public_key": "A2KUW26On890Z8rjsDgOSlb5rDA-ELHwkPIMJZXp9Q0",
+      "public_key": "AZ_PjdB9eAPRsNEBrpBZRzYTQETLQOy2M2oUB3c734E",
+      "seal_public_key": "60upz3fTFy3sE2Ble485GvHEaVOtwHZxuIV0AzfyKTY",
       "role": "Compliance check",
       "org": "Demo Bank"
     },
     {
       "agent_id": "decision-agent",
-      "public_key": "R_Txcyb9_V6DG0CdrfMqyqIBopeHyNsxlAJ2KNtLUJY",
-      "seal_public_key": "buywu5zW9n94QbHuxVKk2oi7iOCf9QSMv0TI1PAvJxI",
+      "public_key": "KMU9uZbtb2pSDKvdDqYr4ELEjbcFTdvjTM4l_RJbgc4",
+      "seal_public_key": "LqRBxGVn_JwvcrTUbA-Gypqy_MDt5Mlr-p75XEzsJwU",
       "role": "Loan decision",
       "org": "Demo Bank"
     }
