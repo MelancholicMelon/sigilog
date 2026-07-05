@@ -63,8 +63,13 @@ export function resetStore() {
 }
 
 // THE pipeline. Both live SSE and mockfeed call this. Replay events unwrap to
-// their inner ledger_record and re-enter here with { replay: true }.
-export function applyEvent(evt: StreamEvent, opts: { replay?: boolean } = {}) {
+// their inner ledger_record and re-enter here with { replay: true }. History
+// fetched on (re)connect re-enters with { backfill: true } so prior rows land
+// without re-firing the live-activity animation.
+export function applyEvent(
+  evt: StreamEvent,
+  opts: { replay?: boolean; backfill?: boolean } = {},
+) {
   switch (evt.kind) {
     case 'ledger_record': {
       const rec = evt.data
@@ -77,9 +82,10 @@ export function applyEvent(evt: StreamEvent, opts: { replay?: boolean } = {}) {
         : [...state.records, rec].sort((a, b) => a.sequence_number - b.sequence_number)
       let { activitySeq, lastActivity } = state
       if (
-        rec.event_type === 'SENT' ||
-        rec.event_type === 'DELIVERED' ||
-        rec.event_type === 'VERIFICATION_FAILED'
+        !opts.backfill &&
+        (rec.event_type === 'SENT' ||
+          rec.event_type === 'DELIVERED' ||
+          rec.event_type === 'VERIFICATION_FAILED')
       ) {
         activitySeq += 1
         lastActivity = { activitySeq, record: rec, replay: !!opts.replay }

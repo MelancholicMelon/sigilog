@@ -5,7 +5,7 @@
 
 import { RELAY_BASE } from '../config'
 import { applyEvent } from '../store'
-import type { StreamEvent } from '../types'
+import type { LedgerRecord, StreamEvent } from '../types'
 
 let es: EventSource | null = null
 
@@ -23,8 +23,37 @@ export function connectRealFeed(): () => void {
     // EventSource auto-reconnects; stream_seq gaps are detectable by the store.
     console.warn('SSE error (will retry)', err)
   }
+  // Backfill history. B's SSE bus only carries events emitted after we connect
+  // (no replay to late subscribers), so a mid-run connect or page refresh would
+  // otherwise show a blank ledger until the next event. GET /ledger/records
+  // returns the full chain; we replay it through the same pipeline as
+  // { backfill: true } (no live animation). Ordering is race-free: the stream
+  // is already open, and ledger_record dedup (by record_id) makes any overlap
+  // between backfill and live events idempotent.
+  void backfillLedger()
   return () => {
     es?.close()
     es = null
+  }
+}
+
+async function backfillLedger(): Promise<void> {
+  try {
+    const res = await fetch(`${RELAY_BASE}/ledger/records`)
+    if (!res.ok) return
+    const records = (await res.json()) as LedgerRecord[]
+    for (const rec of records) {
+      applyEvent(
+        {
+          stream_seq: rec.sequence_number,
+          kind: 'ledger_record',
+          timestamp: rec.timestamp,
+          data: rec,
+        },
+        { backfill: true },
+      )
+    }
+  } catch (err) {
+    console.warn('ledger backfill failed', err)
   }
 }
