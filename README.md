@@ -2,6 +2,18 @@
 
 **A protocol layer for multi-agent AI: verified identity, tamper-evident messages, and replayable audit trails.**
 
+> *A regulator calls. Three months ago, your bank's AI system denied a loan. The applicant is disputing it, and the regulator wants to know exactly what happened.*
+>
+> Your intake agent pulled the application. A risk agent scored it. A compliance agent checked it against policy. A decision agent denied it. All of this happened in nine seconds, across four different AI services, and the only record is a pile of logs that a competent engineer could have edited last Tuesday.
+>
+> Was the risk score accurate when it was computed? Did compliance actually see the same data that risk produced, or something altered in transit? Could someone — a bug, a bad actor, a misconfigured retry — have swapped a `HIGH` for a `LOW` between two agents nobody was watching? You don't know. You can't know. Your logs are a story your systems tell about themselves, and stories can be rewritten.
+>
+> Now imagine a different version of that phone call. Every message between those four agents was signed by the agent that sent it. Every hop is cryptographically linked to what it was derived from. The moment compliance received a message, the system could already tell whether it matched, byte for byte, what risk actually sent. And the entire sequence — every message, every verification, every access — sits in a ledger where altering a single past record breaks a chain anyone can check.
+>
+> You don't tell the regulator "we believe our logs are accurate." You press replay.
+
+**That's the gap `sigilog` closes.** It doesn't make agents smarter — it makes their conversations provable.
+
 > An AI agent at your bank just approved a loan. Can you prove why?
 
 Today's multi-agent systems exchange plain context — JSON blobs and API calls with no cryptographic guarantee of who sent them, whether they were altered in transit, or who's read them since. `sigilog` is the trust and provenance layer underneath that exchange: think **TLS + git for AI agents**, not another agent framework or memory store.
