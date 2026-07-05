@@ -110,7 +110,7 @@ verification, not the SDK grading its own homework.
 
 ## Getting started
 
-**Prerequisites:** Node.js ≥ 18, Python ≥ 3.11 (non-Anaconda), `tmux`.
+**Prerequisites:** Node.js ≥ 18, Python ≥ 3.11 (non-Anaconda), `tmux([How to install tmux](https://github.com/tmux/tmux/wiki/installing))`.
 
 ```bash
 git clone https://github.com/MelancholicMelon/sigilog.git
