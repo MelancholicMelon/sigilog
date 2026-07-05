@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { RotateCcw } from 'lucide-react'
 import { replay } from '../feed/actions'
 import { useStore } from '../useStore'
 
@@ -19,13 +20,17 @@ export function ReplayBar() {
   const effectiveTo = pinned ? maxSeq : Math.min(draggedTo, maxSeq)
 
   return (
-    <div className="flex items-center gap-3 rounded border border-zinc-700 bg-zinc-900/40 px-3 py-2 text-xs">
+    <div className="flex items-center gap-3 rounded-lg border border-zinc-800 bg-zinc-900/40 px-3 py-2 text-xs">
+      <span className="hidden font-medium uppercase tracking-wider text-zinc-500 sm:block">
+        Audit replay
+      </span>
       <button
-        className="rounded bg-amber-700 px-3 py-1 font-medium hover:bg-amber-600 disabled:opacity-40"
+        className="flex items-center gap-1.5 rounded-md border border-amber-600/60 bg-amber-950/40 px-3 py-1 font-medium text-amber-300 transition-colors hover:bg-amber-900/40 disabled:opacity-40"
         disabled={maxSeq === 0 || s.replaying}
         onClick={() => replay(0, effectiveTo, speed)}
       >
-        ⟲ Replay 0–{effectiveTo}
+        <RotateCcw className="h-3.5 w-3.5" />
+        Replay 0–{effectiveTo}
       </button>
       <input
         type="range"
@@ -36,7 +41,7 @@ export function ReplayBar() {
           setPinned(false)
           setDraggedTo(Number(e.target.value))
         }}
-        className="flex-1 accent-amber-500"
+        className="scrubber flex-1"
       />
       <span className="w-24 font-mono text-zinc-500">
         seq {effectiveTo}/{maxSeq}
@@ -45,8 +50,10 @@ export function ReplayBar() {
         {SPEEDS.map((sp) => (
           <button
             key={sp}
-            className={`rounded px-2 py-0.5 ${
-              sp === speed ? 'bg-amber-600 text-white' : 'bg-zinc-800 text-zinc-400'
+            className={`rounded-md px-2 py-0.5 transition-colors ${
+              sp === speed
+                ? 'bg-amber-500 font-semibold text-zinc-950'
+                : 'bg-zinc-800 text-zinc-400 hover:text-zinc-200'
             }`}
             onClick={() => setSpeed(sp)}
           >

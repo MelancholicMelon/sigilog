@@ -1,6 +1,11 @@
 @import 'tailwindcss';
 
-/* Neutral base. Real design lands later via design.md handoff. */
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
 :root {
   color-scheme: dark;
 }
@@ -9,5 +14,68 @@ body {
   margin: 0;
   background: #0b0d12;
   color: #d6d9e0;
-  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: var(--font-sans);
+}
+
+/* Audit replay scrubber */
+input[type='range'].scrubber {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 9999px;
+  background: #27272a;
+  outline-offset: 4px;
+}
+input[type='range'].scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: #fbbf24;
+  border: 2px solid #0b0d12;
+  box-shadow: 0 0 0 1px #fbbf2466;
+  cursor: pointer;
+}
+input[type='range'].scrubber::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: #fbbf24;
+  border: 2px solid #0b0d12;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Broken-seal alarm ring around a rejecting graph node */
+  .seal-pulse {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: seal-pulse 1.1s ease-out infinite;
+  }
+  @keyframes seal-pulse {
+    0% {
+      transform: scale(1);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(1.55);
+      opacity: 0;
+    }
+  }
+
+  /* New card / banner entrance */
+  .card-in {
+    animation: card-in 0.28s ease-out both;
+  }
+  @keyframes card-in {
+    from {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }

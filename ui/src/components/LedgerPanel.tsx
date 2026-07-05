@@ -1,3 +1,4 @@
+import { ArrowDownLeft, ArrowUpRight, KeyRound, LockOpen, ShieldCheck, ShieldX } from 'lucide-react'
 import { useStore } from '../useStore'
 import type { LedgerEventType, LedgerRecord } from '../types'
 
@@ -5,13 +6,13 @@ import type { LedgerEventType, LedgerRecord } from '../types'
 // verbatim (ledger.schema.md §2, sdk.api.md §2). Clicking a row selects the
 // envelope for the provenance inspector.
 
-const BADGE: Record<LedgerEventType, { icon: string; cls: string }> = {
-  REGISTERED: { icon: '•', cls: 'text-zinc-400' },
-  SENT: { icon: '↗', cls: 'text-sky-400' },
-  DELIVERED: { icon: '↘', cls: 'text-sky-300' },
-  VERIFIED: { icon: '✅', cls: 'text-emerald-400' },
-  OPENED: { icon: '🔓', cls: 'text-amber-300' },
-  VERIFICATION_FAILED: { icon: '❌', cls: 'text-red-400' },
+const BADGE: Record<LedgerEventType, { Icon: typeof KeyRound; cls: string }> = {
+  REGISTERED: { Icon: KeyRound, cls: 'text-zinc-400' },
+  SENT: { Icon: ArrowUpRight, cls: 'text-sky-400' },
+  DELIVERED: { Icon: ArrowDownLeft, cls: 'text-sky-300' },
+  VERIFIED: { Icon: ShieldCheck, cls: 'text-emerald-400' },
+  OPENED: { Icon: LockOpen, cls: 'text-amber-300' },
+  VERIFICATION_FAILED: { Icon: ShieldX, cls: 'text-red-400' },
 }
 
 function shortHash(h: string) {
@@ -32,12 +33,12 @@ function Row({
   return (
     <button
       onClick={onSelect}
-      className={`flex w-full items-center gap-2 border-b border-zinc-800 px-2 py-1 text-left font-mono text-[11px] hover:bg-zinc-800/60 ${
+      className={`flex w-full items-center gap-2 border-b border-zinc-800/70 px-2 py-1 text-left font-mono text-[11px] hover:bg-zinc-800/60 ${
         failed ? 'bg-red-950/40' : ''
-      } ${selected ? 'ring-1 ring-amber-400/70' : ''}`}
+      } ${selected ? 'ring-1 ring-inset ring-amber-400/70' : ''}`}
     >
       <span className="w-8 shrink-0 text-zinc-600">#{r.sequence_number}</span>
-      <span className={`w-4 shrink-0 ${b.cls}`}>{b.icon}</span>
+      <b.Icon className={`h-3.5 w-3.5 shrink-0 ${b.cls}`} />
       <span className={`w-40 shrink-0 ${b.cls}`}>{r.event_type}</span>
       <span className="w-28 shrink-0 truncate text-zinc-400">{r.actor_id}</span>
       {failed ? (
@@ -62,7 +63,7 @@ export function LedgerPanel({
   const head = s.records[s.records.length - 1]
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center justify-between border-b border-zinc-700 px-2 py-1 text-xs">
+      <div className="flex items-center justify-between border-b border-zinc-800 px-3 py-1.5 text-xs">
         <span className="font-semibold text-zinc-300">Ledger</span>
         <span className="font-mono text-zinc-600">
           head #{head ? head.sequence_number : '—'} · {s.records.length} records

@@ -1,3 +1,4 @@
+import { FileWarning, Play, Radio, RotateCcw, SearchCheck, ShieldCheck, ShieldX, Zap } from 'lucide-react'
 import { getFeedMode } from '../config'
 import { corruptNext, devBreakLedger, isLedgerBroken, runAudit, runScenario } from '../feed/actions'
 import { useStore } from '../useStore'
@@ -9,64 +10,80 @@ export function Controls() {
   const s = useStore()
   const mock = getFeedMode() === 'mock'
   const audit = s.audit
-  const pct =
-    audit.total > 0 ? Math.round((audit.checked / audit.total) * 100) : 0
+  const pct = audit.total > 0 ? Math.round((audit.checked / audit.total) * 100) : 0
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-col items-end gap-2">
+      <div className="flex flex-wrap items-center justify-end gap-2">
         <button
-          className="rounded bg-emerald-700 px-3 py-1.5 text-sm font-medium hover:bg-emerald-600"
+          className="flex items-center gap-1.5 rounded-md bg-amber-500 px-3 py-1.5 text-sm font-semibold text-zinc-950 transition-colors hover:bg-amber-400"
           onClick={runScenario}
         >
-          ▶ Run scenario
+          <Play className="h-3.5 w-3.5" />
+          Run scenario
         </button>
         <button
-          className="rounded bg-red-700 px-3 py-1.5 text-sm font-semibold hover:bg-red-600"
+          className="flex items-center gap-1.5 rounded-md bg-red-700 px-3 py-1.5 text-sm font-semibold text-red-50 transition-colors hover:bg-red-600"
           onClick={corruptNext}
         >
-          ⚠ CORRUPT NEXT MESSAGE
+          <Zap className="h-3.5 w-3.5" />
+          Corrupt next message
         </button>
         <button
-          className="rounded bg-indigo-700 px-3 py-1.5 text-sm font-medium hover:bg-indigo-600"
+          className="flex items-center gap-1.5 rounded-md border border-zinc-700 bg-zinc-800/60 px-3 py-1.5 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-700/60 hover:text-zinc-100"
           onClick={runAudit}
         >
-          🔍 Run audit
+          <SearchCheck className="h-3.5 w-3.5" />
+          Run audit
         </button>
         {mock && (
           <button
-            className="rounded border border-amber-700 bg-amber-900/40 px-3 py-1.5 text-xs text-amber-300 hover:bg-amber-900/70"
+            className="flex items-center gap-1.5 rounded-md border border-dashed border-zinc-700 px-3 py-1.5 text-xs text-zinc-500 transition-colors hover:border-zinc-500 hover:text-zinc-300"
             onClick={devBreakLedger}
             title="mock only: models a hand-edited ledger; next audit reports a break"
           >
-            🩹 tamper ledger {isLedgerBroken() ? '(armed)' : ''}
+            <FileWarning className="h-3.5 w-3.5" />
+            Tamper ledger{isLedgerBroken() ? ' (armed)' : ''}
           </button>
         )}
       </div>
 
       {/* status strip */}
-      <div className="flex items-center gap-3 text-xs">
+      <div className="flex items-center gap-2 text-xs">
         {s.maliciousMode && (
-          <span className="animate-pulse rounded bg-red-600 px-2 py-0.5 font-semibold text-white">
-            ● RELAY COMPROMISED — next message will be mutated
+          <span className="card-in flex animate-pulse items-center gap-1.5 rounded-md bg-red-600 px-2.5 py-1 font-semibold text-white">
+            <Radio className="h-3.5 w-3.5" />
+            Relay compromised — next message will be mutated
           </span>
         )}
         {audit.total > 0 && !audit.result && (
-          <span className="text-indigo-300">auditing… {audit.checked}/{audit.total} ({pct}%)</span>
+          <span className="flex items-center gap-2 rounded-md border border-zinc-700 px-2.5 py-1 text-zinc-400">
+            <span className="h-1.5 w-24 overflow-hidden rounded-full bg-zinc-800">
+              <span
+                className="block h-full rounded-full bg-amber-400 transition-all"
+                style={{ width: `${pct}%` }}
+              />
+            </span>
+            auditing {audit.checked}/{audit.total}
+          </span>
         )}
         {audit.result &&
           (audit.result.chain === 'CHAIN_OK' ? (
-            <span className="rounded bg-emerald-800 px-2 py-0.5 text-emerald-200">
-              ✅ CHAIN_OK · {audit.result.signatures_ok} sigs verified
+            <span className="card-in flex items-center gap-1.5 rounded-md border border-emerald-700/60 bg-emerald-950/60 px-2.5 py-1 font-semibold text-emerald-300">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              Chain intact · {audit.result.signatures_ok} signatures verified
             </span>
           ) : (
-            <span className="rounded bg-red-800 px-2 py-0.5 font-semibold text-red-100">
-              ❌ CHAIN_BROKEN_AT #{audit.result.broken_at_seq} · history was
-              altered
+            <span className="card-in flex items-center gap-1.5 rounded-md border border-red-700/60 bg-red-950/60 px-2.5 py-1 font-semibold text-red-300">
+              <ShieldX className="h-3.5 w-3.5" />
+              Chain broken at #{audit.result.broken_at_seq} — history was altered
             </span>
           ))}
         {s.replaying && (
-          <span className="rounded bg-amber-700 px-2 py-0.5 text-amber-100">⟲ REPLAY</span>
+          <span className="card-in flex items-center gap-1.5 rounded-md border border-amber-600/60 bg-amber-950/60 px-2.5 py-1 font-semibold text-amber-300">
+            <RotateCcw className="h-3.5 w-3.5" />
+            Replay
+          </span>
         )}
       </div>
     </div>
