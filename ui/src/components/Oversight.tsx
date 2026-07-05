@@ -2,6 +2,7 @@
 // Shows each loan decision in plain language with a link to its cryptographic
 // audit trail. Reads from the same store the infrastructure view uses.
 
+import { useState } from 'react'
 import { ancestryOf, getState } from '../store'
 import { useStore } from '../useStore'
 import type { EnvelopeMeta } from '../types'
@@ -30,6 +31,7 @@ function CaseCard({
   decision: EnvelopeMeta
   onSelectEnvelope: (id: string) => void
 }) {
+  const [trailOpen, setTrailOpen] = useState(false)
   const chain = ancestryOf(decision.envelope_id)
   const root = chain[chain.length - 1] // LOAN_APPLICATION — always SEALED
   const riskEnv = chain.find((m) => m.message_type === 'RISK_ASSESSMENT')
@@ -93,12 +95,38 @@ function CaseCard({
       <div className="mt-2 flex items-center justify-between">
         <span className="text-[11px] text-zinc-600">{timestamp(decision.envelope_id)}</span>
         <button
-          onClick={() => onSelectEnvelope(decision.envelope_id)}
+          onClick={() => {
+            setTrailOpen((v) => !v)
+            onSelectEnvelope(decision.envelope_id)
+          }}
           className="rounded bg-zinc-700 px-2 py-0.5 text-[11px] hover:bg-zinc-600"
         >
-          View audit trail →
+          {trailOpen ? '▲ Hide trail' : '▼ View audit trail'}
         </button>
       </div>
+
+      {/* inline provenance trail */}
+      {trailOpen && (
+        <div className="mt-2 border-t border-zinc-700/60 pt-2 space-y-1">
+          {chain.map((m, i) => (
+            <div key={m.envelope_hash}>
+              <div className="flex items-center justify-between text-[10px]">
+                <span className="font-semibold text-zinc-300">{m.message_type}</span>
+                <span className="font-mono text-zinc-600">{m.envelope_hash.slice(0, 10)}</span>
+              </div>
+              <div className="text-[10px] text-zinc-500">
+                {m.sender_id.replace('-agent', '')} → {m.recipient_ids.map((r) => r.replace('-agent', '')).join(', ')}
+              </div>
+              <div className={`text-[10px] font-mono ${m.payload_mode === 'SEALED' ? 'text-amber-400/70' : 'text-emerald-400/70'}`}>
+                {m.payload_mode === 'SEALED' ? '🔒 ' : ''}{m.payload_preview.slice(0, 60)}
+              </div>
+              {i < chain.length - 1 && (
+                <div className="py-0.5 text-center text-[9px] text-zinc-700">↑ derived from</div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

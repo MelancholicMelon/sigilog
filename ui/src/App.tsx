@@ -8,8 +8,9 @@ import { Inspector } from './components/Inspector'
 import { Controls } from './components/Controls'
 import { ReplayBar } from './components/ReplayBar'
 import { Oversight } from './components/Oversight'
+import { AgentConsole } from './components/AgentConsole'
 
-type RightTab = 'ledger' | 'oversight'
+type RightTab = 'ledger' | 'oversight' | 'console'
 
 function App() {
   useFeed()
@@ -43,26 +44,32 @@ function App() {
           </div>
         </div>
 
-        {/* right column: tabbed — Audit Ledger | Case Oversight */}
+        {/* right column: tabbed */}
         <div className="flex min-h-0 flex-col rounded border border-zinc-700 bg-zinc-900/40">
           <div className="flex shrink-0 border-b border-zinc-700 text-xs">
-            {(['oversight', 'ledger'] as RightTab[]).map((tab) => (
+            {([
+              ['oversight', '🏦 Cases'],
+              ['console',   '🤖 Agent Log'],
+              ['ledger',    '🔗 Ledger'],
+            ] as [RightTab, string][]).map(([tab, label]) => (
               <button
                 key={tab}
                 onClick={() => setRightTab(tab)}
-                className={`px-3 py-1.5 font-medium transition-colors ${
+                className={`flex-1 px-2 py-1.5 font-medium transition-colors ${
                   rightTab === tab
                     ? 'border-b-2 border-amber-400 text-zinc-100'
                     : 'text-zinc-500 hover:text-zinc-300'
                 }`}
               >
-                {tab === 'oversight' ? '🏦 Case Oversight' : '🔗 Audit Ledger'}
+                {label}
               </button>
             ))}
           </div>
           <div className="min-h-0 flex-1">
             {rightTab === 'ledger' ? (
               <LedgerPanel selectedEnvelopeId={selected} onSelectEnvelope={setSelected} />
+            ) : rightTab === 'console' ? (
+              <AgentConsole />
             ) : (
               <Oversight onSelectEnvelope={setSelected} />
             )}
