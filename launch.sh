@@ -5,8 +5,12 @@
 REPO="$(cd "$(dirname "$0")" && pwd)"
 SESSION="sigilog"
 
-# Kill stale session if present
+# Kill stale session and any leftover processes on the ports
 tmux kill-session -t "$SESSION" 2>/dev/null
+pkill -f "relay/server.js" 2>/dev/null
+lsof -ti :8080 | xargs kill -9 2>/dev/null
+lsof -ti :3000 | xargs kill -9 2>/dev/null
+sleep 1
 
 # New detached session — pane 0
 tmux new-session -d -s "$SESSION" -x 220 -y 60
