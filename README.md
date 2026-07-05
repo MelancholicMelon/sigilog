@@ -102,14 +102,13 @@ sigilog/
 └── submission/        # hackathon deliverables (pitch, video script, writeups)
 ```
 
-See [`PLAN.md`](./PLAN.md) for the full architecture, threat model, audit/provenance design, team workflow, and roadmap.
 
 ---
 
 ## Getting started
 
 ```bash
-git clone https://github.com/<you>/sigilog.git
+git clone https://github.com/MelancholicMelon/sigilog.git
 cd sigilog
 # see contracts/transport.md for ports, endpoints, and runtime paths
 ```
