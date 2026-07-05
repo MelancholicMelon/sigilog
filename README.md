@@ -1,7 +1,7 @@
 # sigilog
 
 **A protocol layer for multi-agent AI: verified identity, tamper-evident messages, and replayable audit trails.**
-
+Imagine in a future where AI agents are commonplace
 > *A regulator calls. Three months ago, your bank's AI system denied a loan. The applicant is disputing it, and the regulator wants to know exactly what happened.*
 >
 > Your intake agent pulled the application. A risk agent scored it. A compliance agent checked it against policy. A decision agent denied it. All of this happened in nine seconds, across four different AI services, and the only record is a pile of logs that a competent engineer could have edited last Tuesday.
